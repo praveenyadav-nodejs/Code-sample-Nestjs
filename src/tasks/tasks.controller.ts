@@ -22,7 +22,7 @@ import { User } from 'src/auth/user.entity';
 @Controller('tasks')
 @UseGuards(AuthGuard())
 export class TasksController {
-  constructor(private tasksService: TasksService) {}
+  constructor(private tasksService: TasksService) { }
 
   @Get()
   getAllTasks(
@@ -33,8 +33,8 @@ export class TasksController {
   }
 
   @Get('/:id')
-  getTaskById(@Param('id') id: string): Promise<Tasks> {
-    return this.tasksService.getTaskById(id);
+  getTaskById(@Param('id') id: string, @GetUser() user: User): Promise<Tasks> {
+    return this.tasksService.getTaskById(id, user);
   }
 
   @Post()
@@ -46,15 +46,16 @@ export class TasksController {
   }
 
   @Delete('/:id')
-  deleteTask(@Param('id') id: string): Promise<void> {
-    return this.tasksService.deleteTask(id);
+  deleteTask(@Param('id') id: string, @GetUser() user: User): Promise<void> {
+    return this.tasksService.deleteTask(id, user);
   }
 
   @Patch('/:id/status')
   updateTaskStatus(
-    @Param() id: string,
+    @Param('id') id: string,
     @Body('status') status: TaskStatus,
+    @GetUser() user: User,
   ): Promise<Tasks> {
-    return this.tasksService.updateTaskStatusById(id, status);
+    return this.tasksService.updateTaskStatusById(id, status, user);
   }
 }
